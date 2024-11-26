@@ -1,4 +1,6 @@
 ﻿using API_Auth.Entities;
+using API_Auth.Features.Employees.Dtos;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +21,8 @@ namespace API_Auth.Controllers
 
         // CREATE: POST /Employees
         [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<Employee>> CreateEmployee([FromBody] Employee employee)
+        //[Authorize]
+        public async Task<ActionResult<Employee>> CreateEmployee([FromBody] EmployeeDto employee)
         {
             if (!ModelState.IsValid)
             {
@@ -28,15 +30,19 @@ namespace API_Auth.Controllers
             }
 
             // Dodanie nowego pracownika
-            _context.Employees.Add(employee);
+
+            // Mapowanie z Dto na Db model
+            var employeeDb = employee.Adapt<Employee>();
+
+            _context.Employees.Add(employeeDb);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+            return CreatedAtAction(nameof(GetEmployee), new { id = employeeDb.Id }, employeeDb);
         }
 
         // DELETE: DELETE /Employees/{id}
         [HttpDelete("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             var employee = await _context.Employees
@@ -57,7 +63,7 @@ namespace API_Auth.Controllers
 
         // GET: GET /Employees/{id}
         [HttpGet("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
             var employee = await _context.Employees
@@ -77,7 +83,7 @@ namespace API_Auth.Controllers
 
         // GET: GET /Employees
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployees()
         {
             var employees = await _context.Employees

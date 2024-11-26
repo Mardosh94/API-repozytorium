@@ -62,17 +62,17 @@ namespace API_Auth
             //    .HasForeignKey<Invoices>(x => x.SupplierId);//Relacja jeden-do-jeden
             //});
         
-            //base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<Address>().HasData(
-            //    new Address { Id = 1, City = "Warszawa", PostCode = "00-001", Street = "Marszałkowska", BuildingNumber = "10" },
-            //    new Address { Id = 2, City = "Kraków", PostCode = "30-001", Street = "Floriańska", BuildingNumber = "5" }
-            //);
+            modelBuilder.Entity<Address>().HasData(
+                new Address { Id = 1, City = "Warszawa", PostCode = "00-001", Street = "Marszałkowska", BuildingNumber = "10" },
+                new Address { Id = 2, City = "Kraków", PostCode = "30-001", Street = "Floriańska", BuildingNumber = "5" }
+            );
 
-            //modelBuilder.Entity<Supplier>().HasData(
-            //    new Supplier { Id = 1, Name = "Supplier A", AddressId = 1, PhoneNumber = "123456789", Email = "supplierA@example.com" },
-            //    new Supplier { Id = 2, Name = "Supplier B", AddressId = 2, PhoneNumber = "987654321", Email = "supplierB@example.com" }
-            //);
+            modelBuilder.Entity<Supplier>().HasData(
+                new Supplier { Id = 1, Name = "Supplier A", AddressId = 1, PhoneNumber = "123456789", Email = "supplierA@example.com" },
+                new Supplier { Id = 2, Name = "Supplier B", AddressId = 2, PhoneNumber = "987654321", Email = "supplierB@example.com" }
+            );
         }
     }
     }
