@@ -1,5 +1,6 @@
 using API_Auth;
 using API_Auth.Features.Employees.Services.EmployeeServices;
+using API_Auth.Features.Employees.Services.TimesheetServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +84,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
+builder.Services.AddScoped<ITimesheetService, TimesheetService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
 var app = builder.Build(); // Tworzy aplikacjê na podstawie skonfigurowanego buildera
 
 // Konfiguracja potoku HTTP (Middleware)

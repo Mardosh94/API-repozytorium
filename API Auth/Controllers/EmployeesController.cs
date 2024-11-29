@@ -1,11 +1,7 @@
 ﻿using API_Auth.Entities;
 using API_Auth.Features.Employees.Dtos;
 using API_Auth.Features.Employees.Services.EmployeeServices;
-using Mapster;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace API_Auth.Controllers
 {
@@ -56,9 +52,14 @@ namespace API_Auth.Controllers
                 return NoContent(); // 204 - No Content, ponieważ obiekt został usunięty
         }
 
+
+
+
+        //CO tutaj zrobić??!?!!?
+
         [HttpPut]
         //[Authorize]
-        public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] int id)///Do przeglądnięcia
+        public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] int id)    ///Do posprzątania
         {
             var employeeToUpdate = await _employeeService.GetEmployeeById(id);
             if(employeeToUpdate == null)
@@ -76,9 +77,14 @@ namespace API_Auth.Controllers
                 employeeToUpdate.Address.Street = employeeToUpdate.Address.Street;
                 employeeToUpdate.Address.BuildingNumber = employeeToUpdate.Address.BuildingNumber;
             }
-
+            await _context.SaveChangesAsync();
             return Ok(employeeToUpdate);
         }
+
+
+
+
+
 
         // GET: GET /Employees/{id}
         [HttpGet("{id}")]
