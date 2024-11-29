@@ -1,4 +1,6 @@
 using API_Auth;
+using API_Auth.Features.Employees.Services.EmployeeServices;
+using API_Auth.Features.Employees.Services.TimesheetServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args); // Inicjalizacja aplikacji ASP.NET Core
 
 // Dodanie us³ug do kontenera Dependency Injection (DI)
+
 
 // Dodaje wsparcie dla kontrolerów API
 builder.Services.AddControllers();
@@ -80,6 +83,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
+builder.Services.AddScoped<ITimesheetService, TimesheetService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
 var app = builder.Build(); // Tworzy aplikacjê na podstawie skonfigurowanego buildera
 
 // Konfiguracja potoku HTTP (Middleware)
