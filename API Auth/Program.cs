@@ -1,6 +1,6 @@
-using API_Auth;
-using API_Auth.Features.Employees.Services.EmployeeServices;
-using API_Auth.Features.Employees.Services.TimesheetServices;
+using API_Auth.Data;
+using API_Auth.Modules.Employees.Services.EmployeeServices;
+using API_Auth.Modules.Employees.Services.TimesheetServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
