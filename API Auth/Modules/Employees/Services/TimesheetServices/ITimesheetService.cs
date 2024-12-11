@@ -11,5 +11,6 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
         Task<ServiceResult<Timesheet>> AddTimesheet(int employeeId, TimesheetDto timesheetDto);
         Task<ServiceResult> DeleteTimesheet(int employeeId, int timeshhetId);
         Task<ServiceResult<decimal>> GetTotalHours(int employeeId);
+        Task<ServiceResult<List<Timesheet>>> GetAllTimesheetByEmployeeId(int employeeId);
     }
 }

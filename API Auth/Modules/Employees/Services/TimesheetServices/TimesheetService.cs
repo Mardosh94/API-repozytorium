@@ -5,6 +5,7 @@ using API_Auth.Modules.Shared;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace API_Auth.Modules.Employees.Services.TimesheetServices
 {
@@ -68,6 +69,31 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
 
         }
 
+        public async Task<ServiceResult<List<Timesheet>>> GetAllTimesheetByEmployeeId(int employeeId)
+        {
+            try
+            {
+               var employee = await GetEmployeeFromDb(employeeId);
+            if (employee == null)
+            {
+                return ServiceResult<List<Timesheet>>.Failure(ErrorMessages.NotFound);
+            }
+                if (employee.Timesheets != null && employee.Timesheets.Any())
+                {
+                    var timesheets = employee.Timesheets.ToList();
+                    return ServiceResult<List<Timesheet>>.Success(timesheets);
+                }
+                else
+                {
+                    return ServiceResult<List<Timesheet>>.Failure(ErrorMessages.NotFound);
+                }
+            }
+            catch (Exception)
+            {
+                return ServiceResult<List<Timesheet>>.Failure(ErrorMessages.InternalServerError);
+            }
+        }
+
         public async Task<ServiceResult<decimal>> GetTotalHours(int employeeId)
         {
             try
@@ -86,7 +112,6 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
             }
             catch (Exception)
             {
-
                 return ServiceResult<decimal>.Failure(ErrorMessages.InternalServerError);
             }
         }

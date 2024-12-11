@@ -13,17 +13,15 @@ namespace API_Auth.Modules.Employees.Controllers
     [Route("[controller]")]
     public class TimesheetsController : ControllerBase
     {
-        private readonly AppDbContext _context;
         private readonly ITimesheetService _timesheetService;
 
-        public TimesheetsController(AppDbContext context, ITimesheetService timesheetService)
+        public TimesheetsController(ITimesheetService timesheetService)
         {
-            _context = context;
             _timesheetService = timesheetService;
 
         }
         // POST api/employees/{employeeId}/timesheet
-        [HttpPost("/timesheet/{employeeId}")]
+        [HttpPost("/Timesheet/add/{employeeId}")]
         public async Task<IActionResult> AddTimesheet(int employeeId, [FromBody] TimesheetDto timesheetDto)
         {
             if (!ModelState.IsValid)
@@ -39,7 +37,7 @@ namespace API_Auth.Modules.Employees.Controllers
                 return StatusCode(500, result.ErrorMessege);
         }
 
-        [HttpDelete("/timesheet/{employeeId}/{timesheetId}")]
+        [HttpDelete("/Timesheet/{employeeId}/{timesheetId}")]
         public async Task<IActionResult> DeleteTimesheet(int employeeId, int timesheetId)
         {
             var deleteResult = await _timesheetService.DeleteTimesheet(employeeId, timesheetId);
@@ -54,7 +52,7 @@ namespace API_Auth.Modules.Employees.Controllers
             }
             return NoContent(); // 204 - No Content, ponieważ obiekt został usunięty
         }
-        [HttpGet("/timesheet/total-hours/{employeeId}")]
+        [HttpGet("/Timesheet/total-hours/{employeeId}")]
         public async Task<IActionResult> GetTotalHours(int employeeId)
         {
             var result = await _timesheetService.GetTotalHours(employeeId);
@@ -70,6 +68,15 @@ namespace API_Auth.Modules.Employees.Controllers
             }
 
             return StatusCode(500, result.ErrorMessege);
+        }
+        [HttpGet("/Timesheet/get/{employeeId}")]
+        public async Task<IActionResult> GetAllTimesheetByEmployeeId(int employeeId)
+        {
+            var timesheet = await _timesheetService.GetAllTimesheetByEmployeeId(employeeId);
+
+            if (timesheet.IsSuccess)
+                return Ok(timesheet.Data);
+            return NotFound();
         }
 
     }
