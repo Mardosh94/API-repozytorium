@@ -1,4 +1,6 @@
-﻿namespace API_Auth.Modules.Shared
+﻿using System;
+
+namespace API_Auth.Modules.Shared
 {
     public class ServiceResult
     {
@@ -9,14 +11,14 @@
 
         public static ServiceResult Success()
         {
-            return new ServiceResult { IsSuccess = true};
+            return new ServiceResult { IsSuccess = true };
         }
         public static ServiceResult Failure(string errorMessege)
         {
             return new ServiceResult { IsSuccess = false, ErrorMessege = errorMessege };
         }
     }
-    public class ServiceResult<T>: ServiceResult where T : class
+    public class ServiceResult<T>: ServiceResult
     {
         public T Data { get; set; }
 

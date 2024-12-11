@@ -2,6 +2,7 @@
 using API_Auth.Modules.Employees.Dtos;
 using API_Auth.Modules.Employees.Entities;
 using API_Auth.Modules.Shared;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,28 +12,90 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
     {
         private readonly AppDbContext _context;
 
+        public TimesheetService()
+        {
+        }
+
         public TimesheetService(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<ServiceResult<TimesheetDto>> AddTimesheet(TimesheetDto timesheetDto)
+        public async Task<ServiceResult<Timesheet>> AddTimesheet(int employeeId, TimesheetDto timesheetDto)
         {
             try
             {
-                var timesheetDto = timesheetDto.Adapt<Timesheet>(); // Mapowanie z Dto na db model
+                var employee = await GetEmployeeFromDb(employeeId);
 
-                _context.Employees.Add(timesheetDto);
+                if (employee == null)
+                {
+                    return ServiceResult<Timesheet>.Failure(ErrorMessages.NotFound);
+                }
+
+                var timesheet = timesheetDto.Adapt<Timesheet>();
+                employee.Timesheets ??= new List<Timesheet>();
+                employee.Timesheets.Add(timesheet);
+
+                _context.Timesheets.Add(timesheet);
 
                 await _context.SaveChangesAsync();
-                return ServiceResult<Employee>.Success(timesheetDto);
+                return ServiceResult<Timesheet>.Success(timesheet);
             }
             catch (Exception ex)
             {
-                return ServiceResult<Employee>.Failure(ex.Message);
+                return ServiceResult<Timesheet>.Failure(ErrorMessages.InternalServerError);
             }
+        }
+        public async Task<ServiceResult> DeleteTimesheet(int employeeId, int timesheetId)
+        {
+            try
+            {
+                var employee = await GetEmployeeFromDb(employeeId);
+                if (employee == null || !employee.Timesheets.Any(t => t.Id == timesheetId))
+                {
+                    return ServiceResult<Timesheet>.Failure(ErrorMessages.NotFound);
+                }
+                var timesheet = employee.Timesheets.First(t => t.Id == timesheetId);
+
+                _context.Timesheets.Remove(timesheet);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return ServiceResult<Timesheet>.Failure(ErrorMessages.InternalServerError);
+            }
+            return ServiceResult.Success();
 
         }
 
+        public async Task<ServiceResult<decimal>> GetTotalHours(int employeeId)
+        {
+            try
+            {
+                var employee = await GetEmployeeFromDb(employeeId);
+                if (employee == null)
+                {
+                    return ServiceResult<decimal>.Failure(ErrorMessages.NotFound);
+                }
+                if (employee.Timesheets == null || !employee.Timesheets.Any())
+                {
+                    return ServiceResult<decimal>.Failure(ErrorMessages.NotFound);
+                }
+                var totalHours = employee.Timesheets.Sum(t => t.TimeOfWorking);
+                return ServiceResult<decimal>.Success(totalHours);
+            }
+            catch (Exception)
+            {
+
+                return ServiceResult<decimal>.Failure(ErrorMessages.InternalServerError);
+            }
+        }
+
+        private async Task<Employee?> GetEmployeeFromDb(int id)
+        {
+            return await _context.Employees
+            .Include(e => e.Timesheets)
+            .FirstOrDefaultAsync(e => e.Id == id);
+        }
     }
 }

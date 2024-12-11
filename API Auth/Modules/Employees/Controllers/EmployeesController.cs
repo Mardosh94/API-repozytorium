@@ -13,14 +13,11 @@ namespace API_Auth.Modules.Employees.Controllers
     [Route("[controller]")]
     public class EmployeesController : ControllerBase
     {
-        private readonly AppDbContext _context;
         private readonly IEmployeeService _employeeService;
 
         public EmployeesController(AppDbContext context, IEmployeeService employeeService)
         {
-            _context = context;
             _employeeService = employeeService;
-
         }
 
         // CREATE: POST /Employees
@@ -44,7 +41,7 @@ namespace API_Auth.Modules.Employees.Controllers
         //DELETE: DELETE /Employees/{id}
         [HttpDelete("delete/{id}")]
         //[Authorize]
-        public async Task<IActionResult> DeleteEmployee(int id)//nie działa!
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
             var deleteResult = await _employeeService.DeleteEmployee(id);
             if (!deleteResult.IsSuccess)

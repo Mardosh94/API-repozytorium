@@ -2,6 +2,7 @@
 using API_Auth.Modules.Employees.Dtos;
 using API_Auth.Modules.Employees.Entities;
 using API_Auth.Modules.Employees.Services.TimesheetServices;
+using API_Auth.Modules.Shared;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,59 +22,54 @@ namespace API_Auth.Modules.Employees.Controllers
             _timesheetService = timesheetService;
 
         }
-        // CREATE: POST /Timesheets
-        [HttpGet("sum/{id}")]
-        //[Authorize]
-        public async Task<ActionResult<TimesheetDto>> GetEmployeeWithTimesheet(int id)
-        {
-            var employee = await _context.Employees
-           .Include(e => e.Timesheets)
-           .FirstOrDefaultAsync(e => e.Id == id);
-
-            if (employee == null) 
-                return NotFound();
-
-            decimal totalTimeWorked = employee.Timesheets.Sum(t => t.TimeOfWorking);
-
-            var employeeTimesheet = new EmployeeTimesheetDto
-            {
-                Id = employee.Id,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                TotalWorkedTime = totalTimeWorked,
-                Timesheets = employee.Timesheets.Select(t => new TimesheetDto
-                {
-                    Date = t.Date,
-                    TimeOfWorking = t.TimeOfWorking
-                }).ToList()
-            };
-
-            return Ok(employeeTimesheet);
-        }
-
         // POST api/employees/{employeeId}/timesheet
-        [HttpPost("{employeeId}/timesheet")]
+        [HttpPost("/timesheet/{employeeId}")]
         public async Task<IActionResult> AddTimesheet(int employeeId, [FromBody] TimesheetDto timesheetDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var result = await _timesheetService.AddTimesheet(employeeId, timesheetDto);
 
             if (result.IsSuccess)
                 return Created($"Timesheet/{result.Data.Id.ToString()}", result.Data);
             else
                 return StatusCode(500, result.ErrorMessege);
+        }
 
+        [HttpDelete("/timesheet/{employeeId}/{timesheetId}")]
+        public async Task<IActionResult> DeleteTimesheet(int employeeId, int timesheetId)
+        {
+            var deleteResult = await _timesheetService.DeleteTimesheet(employeeId, timesheetId);
 
+            if (!deleteResult.IsSuccess)
+            {
+                if (deleteResult.ErrorMessege.Equals(ErrorMessages.NotFound))
+                    return NotFound();
 
+                if (deleteResult.ErrorMessege.Equals(ErrorMessages.InternalServerError))
+                    return StatusCode(500);
+            }
+            return NoContent(); // 204 - No Content, ponieważ obiekt został usunięty
+        }
+        [HttpGet("/timesheet/total-hours/{employeeId}")]
+        public async Task<IActionResult> GetTotalHours(int employeeId)
+        {
+            var result = await _timesheetService.GetTotalHours(employeeId);
 
-            // Dodajemy nowy Timesheet do bazy danych
-            employee.Timesheets.Add();
-            await _context.SaveChangesAsync();
+            if (result.IsSuccess)
+            {
+                return Ok(new { TotalHours = result});
+            }
 
-            return CreatedAtAction(nameof(GetEmployeeWithTimesheet), new { id = employeeId }, timesheet);
+            if (result.ErrorMessege.Contains("not found"))
+            {
+                return NotFound(result.ErrorMessege);
+            }
+
+            return StatusCode(500, result.ErrorMessege);
         }
 
     }
