@@ -37,7 +37,7 @@ namespace API_Auth.Modules.Employees.Controllers
                 return StatusCode(500, result.ErrorMessege);
         }
 
-        [HttpDelete("/Timesheet/{employeeId}/{timesheetId}")]
+        [HttpDelete("/Timesheet/delete/{employeeId}/{timesheetId}")]
         public async Task<IActionResult> DeleteTimesheet(int employeeId, int timesheetId)
         {
             var deleteResult = await _timesheetService.DeleteTimesheet(employeeId, timesheetId);

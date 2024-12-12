@@ -5,6 +5,7 @@ using API_Auth.Modules.Employees.Responses;
 using API_Auth.Modules.Employees.Services.EmployeeServices;
 using API_Auth.Modules.Shared;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Auth.Modules.Employees.Controllers
