@@ -13,10 +13,6 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
     {
         private readonly AppDbContext _context;
 
-        public TimesheetService()
-        {
-        }
-
         public TimesheetService(AppDbContext context)
         {
             _context = context;
