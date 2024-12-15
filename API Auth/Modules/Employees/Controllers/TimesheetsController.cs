@@ -41,7 +41,7 @@ namespace API_Auth.Modules.Employees.Controllers
             {
                 if (deleteResult.ErrorMessege.Equals(ErrorMessages.NotFound))
                     return NotFound();
-                
+
                 return StatusCode(500);
             }
 
@@ -58,23 +58,23 @@ namespace API_Auth.Modules.Employees.Controllers
                 return Ok(new { TotalHours = result });
             }
 
-            if (result.ErrorMessege.Contains("not found"))
+            if (result.ErrorMessege.Equals(ErrorMessages.NotFound))
             {
-                return NotFound(result.ErrorMessege);
+                return NotFound();
             }
 
             return StatusCode(500, result.ErrorMessege);
         }
 
-        [HttpGet("/Timesheet/get/{employeeId}")]
+        [HttpGet("/Employees/{employeeId}/Timesheets")]
         public async Task<IActionResult> GetAllTimesheetByEmployeeId(int employeeId)
         {
-            var timesheet = await _timesheetService.GetAllTimesheetByEmployeeId(employeeId);
+            var result = await _timesheetService.GetAllTimesheetByEmployeeId(employeeId);
 
-            if (timesheet.IsSuccess)
-                return Ok(timesheet.Data);
-            return NotFound();
+            if (!result.IsSuccess)
+                return NotFound();
+
+            return Ok(result.Data);
         }
-
     }
 }

@@ -66,19 +66,12 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
             try
             {
                 var employee = await GetEmployeeFromDb(employeeId);
-                if (employee == null)
+                if (employee?.Timesheets == null || !employee.Timesheets.Any())
                 {
                     return ServiceResult<List<Timesheet>>.Failure(ErrorMessages.NotFound);
                 }
-                if (employee.Timesheets != null && employee.Timesheets.Any())
-                {
-                    var timesheets = employee.Timesheets.ToList();
-                    return ServiceResult<List<Timesheet>>.Success(timesheets);
-                }
-                else
-                {
-                    return ServiceResult<List<Timesheet>>.Failure(ErrorMessages.NotFound);
-                }
+
+                return ServiceResult<List<Timesheet>>.Success(employee.Timesheets);
             }
             catch (Exception)
             {
@@ -95,6 +88,7 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
                 {
                     return ServiceResult<decimal>.Failure(ErrorMessages.NotFound);
                 }
+
                 var totalHours = employee.Timesheets.Sum(t => t.TimeOfWorking);
 
                 return ServiceResult<decimal>.Success(totalHours);
