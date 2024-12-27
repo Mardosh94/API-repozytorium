@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using API_Auth.Modules.Invoices.Entities;
+using System.ComponentModel.DataAnnotations;
 
-namespace API_Auth.Modules.Customers
+namespace API_Auth.Modules.Customers.Entities
 {
     public class Order
     {

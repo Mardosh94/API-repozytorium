@@ -1,8 +1,11 @@
 using API_Auth.Data;
+using API_Auth.Modules.Customers.Services.CustomerServices;
+using API_Auth.Modules.Customers.Services.OrderServices;
 using API_Auth.Modules.Employees.Services.EmployeeServices;
 using API_Auth.Modules.Employees.Services.TimesheetServices;
+using API_Auth.Modules.Suppliers.Services.InvoiceServices;
+using API_Auth.Modules.Suppliers.Services.SupplierServices;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -85,6 +88,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
 builder.Services.AddScoped<ITimesheetService, TimesheetService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
+builder.Services.AddScoped<ICustomerService, CustomerService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
+builder.Services.AddScoped<IOrderService, OrderService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 var app = builder.Build(); // Tworzy aplikacjê na podstawie skonfigurowanego buildera
 
 // Konfiguracja potoku HTTP (Middleware)

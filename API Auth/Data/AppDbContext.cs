@@ -1,6 +1,6 @@
-﻿using API_Auth.Modules.Customers;
+﻿using API_Auth.Modules.Customers.Entities;
 using API_Auth.Modules.Employees.Entities;
-using API_Auth.Modules.Invoices;
+using API_Auth.Modules.Invoices.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

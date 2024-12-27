@@ -3,6 +3,7 @@ using System;
 using API_Auth.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Auth.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241218174234_AddCustomers")]
+    partial class AddCustomers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -188,7 +191,7 @@ namespace API_Auth.Migrations
                     b.ToTable("Timesheets");
                 });
 
-            modelBuilder.Entity("API_Auth.Modules.Invoices.Entities.Invoice", b =>
+            modelBuilder.Entity("API_Auth.Modules.Invoices.Invoice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,6 +208,7 @@ namespace API_Auth.Migrations
 
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
+                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("InvoiceType")
@@ -221,7 +225,7 @@ namespace API_Auth.Migrations
                     b.ToTable("Invoices");
                 });
 
-            modelBuilder.Entity("API_Auth.Modules.Invoices.Entities.Supplier", b =>
+            modelBuilder.Entity("API_Auth.Modules.Invoices.Supplier", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -232,14 +236,17 @@ namespace API_Auth.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("invoiceId")
@@ -500,7 +507,7 @@ namespace API_Auth.Migrations
                         .HasForeignKey("EmployeeId");
                 });
 
-            modelBuilder.Entity("API_Auth.Modules.Invoices.Entities.Supplier", b =>
+            modelBuilder.Entity("API_Auth.Modules.Invoices.Supplier", b =>
                 {
                     b.HasOne("API_Auth.Modules.Employees.Entities.Address", "Address")
                         .WithMany()
@@ -508,7 +515,7 @@ namespace API_Auth.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API_Auth.Modules.Invoices.Entities.Invoice", "Invoices")
+                    b.HasOne("API_Auth.Modules.Invoices.Invoice", "Invoices")
                         .WithMany()
                         .HasForeignKey("invoiceId");
 

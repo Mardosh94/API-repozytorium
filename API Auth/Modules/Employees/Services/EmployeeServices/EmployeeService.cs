@@ -7,10 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_Auth.Modules.Employees.Services.EmployeeServices
 {
-
-
-    //public class
-
     public class EmployeeService : IEmployeeService
     {
         private readonly AppDbContext _context;

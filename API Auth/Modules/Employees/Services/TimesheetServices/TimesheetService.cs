@@ -3,9 +3,7 @@ using API_Auth.Modules.Employees.Dtos;
 using API_Auth.Modules.Employees.Entities;
 using API_Auth.Modules.Shared;
 using Mapster;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace API_Auth.Modules.Employees.Services.TimesheetServices
 {
@@ -23,15 +21,14 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
             try
             {
                 var employee = await GetEmployeeFromDb(employeeId);
-
                 if (employee == null)
                 {
                     return ServiceResult<Timesheet>.Failure(ErrorMessages.NotFound);
                 }
 
                 var timesheet = timesheetDto.Adapt<Timesheet>();
-                employee.Timesheets ??= new List<Timesheet>();
-                employee.Timesheets.Add(timesheet);
+                employee.Timesheets ??= new List<Timesheet>();//
+                employee.Timesheets.Add(timesheet);//
 
                 _context.Timesheets.Add(timesheet);
 
@@ -53,16 +50,15 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
                     return ServiceResult<Timesheet>.Failure(ErrorMessages.NotFound);
                 }
                 var timesheet = employee.Timesheets.First(t => t.Id == timesheetId);
-
                 _context.Timesheets.Remove(timesheet);
+
                 await _context.SaveChangesAsync();
+                return ServiceResult.Success();
             }
-            catch (Exception)
+            catch
             {
                 return ServiceResult<Timesheet>.Failure(ErrorMessages.InternalServerError);
             }
-            return ServiceResult.Success();
-
         }
 
         public async Task<ServiceResult<List<Timesheet>>> GetAllTimesheetByEmployeeId(int employeeId)
@@ -70,19 +66,12 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
             try
             {
                var employee = await GetEmployeeFromDb(employeeId);
-            if (employee == null)
+            if (employee == null || !employee.Timesheets.Any())
             {
                 return ServiceResult<List<Timesheet>>.Failure(ErrorMessages.NotFound);
             }
-                if (employee.Timesheets != null && employee.Timesheets.Any())
-                {
-                    var timesheets = employee.Timesheets.ToList();
-                    return ServiceResult<List<Timesheet>>.Success(timesheets);
-                }
-                else
-                {
-                    return ServiceResult<List<Timesheet>>.Failure(ErrorMessages.NotFound);
-                }
+
+                return ServiceResult<List<Timesheet>>.Success(employee.Timesheets);
             }
             catch (Exception)
             {
@@ -95,15 +84,13 @@ namespace API_Auth.Modules.Employees.Services.TimesheetServices
             try
             {
                 var employee = await GetEmployeeFromDb(employeeId);
-                if (employee == null)
+                if (employee?.Timesheets == null || !employee.Timesheets.Any())
                 {
                     return ServiceResult<decimal>.Failure(ErrorMessages.NotFound);
                 }
-                if (employee.Timesheets == null || !employee.Timesheets.Any())
-                {
-                    return ServiceResult<decimal>.Failure(ErrorMessages.NotFound);
-                }
+
                 var totalHours = employee.Timesheets.Sum(t => t.TimeOfWorking);
+
                 return ServiceResult<decimal>.Success(totalHours);
             }
             catch (Exception)
