@@ -3,6 +3,7 @@ using API_Auth.Modules.Invoices.Entities;
 using API_Auth.Modules.Shared;
 using API_Auth.Modules.Suppliers.Dtos;
 using API_Auth.Modules.Suppliers.Services.InvoiceServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Auth.Modules.Invoices.Controllers
@@ -19,6 +20,7 @@ namespace API_Auth.Modules.Invoices.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize]
         public async Task<IActionResult> AddInvoice([FromBody] InvoiceDto invoice) 
         {
             if (!ModelState.IsValid)
@@ -34,6 +36,7 @@ namespace API_Auth.Modules.Invoices.Controllers
                 return StatusCode(500, result.ErrorMessege);
         }
         [HttpDelete("delete/{id}")]
+        [Authorize]
         public  async Task<IActionResult> DeleteInvoiceById (int id)
         {
             var deleteResult = await _invoiceService.DeleteInvoiceById(id);
@@ -48,6 +51,7 @@ namespace API_Auth.Modules.Invoices.Controllers
             return NoContent();
         }
         [HttpGet("getById/{id}")]
+        [Authorize]
         public async Task<ActionResult> GetInvoiceById(int id)
         {
             var invoice = await _invoiceService.GetInvoiceById(id);
@@ -57,6 +61,7 @@ namespace API_Auth.Modules.Invoices.Controllers
             return NotFound();
         }
         [HttpGet("getByType/{type}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Invoice>>> GetInvoicesByType(int type)
         {
             var invoices = await _invoiceService.GetInvoicesByType(type);

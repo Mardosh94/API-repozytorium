@@ -1,6 +1,7 @@
 ﻿using API_Auth.Modules.Employees.Dtos;
 using API_Auth.Modules.Employees.Services.TimesheetServices;
 using API_Auth.Modules.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Auth.Modules.Employees.Controllers
@@ -16,6 +17,7 @@ namespace API_Auth.Modules.Employees.Controllers
         }
 
         [HttpPost("/Employees/{employeeId}/Timesheets")]
+        [Authorize]
         public async Task<IActionResult> AddTimesheet(int employeeId, [FromBody] TimesheetDto timesheetDto)
         {
             if (!ModelState.IsValid)
@@ -32,6 +34,7 @@ namespace API_Auth.Modules.Employees.Controllers
         }
 
         [HttpDelete("/Employees/{employeeId}/Timesheets/{timesheetId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTimesheet(int employeeId, int timesheetId)
         {
             var deleteResult = await _timesheetService.DeleteTimesheet(employeeId, timesheetId);
@@ -45,6 +48,7 @@ namespace API_Auth.Modules.Employees.Controllers
             return NoContent(); // 204 - No Content, ponieważ obiekt został usunięty
         }
         [HttpGet("/Timesheet/total-hours/{employeeId}")]
+        [Authorize]
         public async Task<IActionResult> GetTotalHours(int employeeId)
         {
             var result = await _timesheetService.GetTotalHours(employeeId);
@@ -62,6 +66,7 @@ namespace API_Auth.Modules.Employees.Controllers
             return StatusCode(500, result.ErrorMessege);
         }
         [HttpGet("/Employees/{employeeId}/Timesheets")]
+        [Authorize]
         public async Task<IActionResult> GetAllTimesheetByEmployeeId(int employeeId)
         {
             var result = await _timesheetService.GetAllTimesheetByEmployeeId(employeeId);

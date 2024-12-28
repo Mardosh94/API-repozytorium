@@ -1,6 +1,7 @@
 ﻿using API_Auth.Data;
 using API_Auth.Modules.Suppliers.Dtos;
 using API_Auth.Modules.Suppliers.Services.SupplierServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Auth.Modules.Invoices.Controllers
@@ -18,6 +19,7 @@ namespace API_Auth.Modules.Invoices.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize]
         public async Task<IActionResult> AddSupplier([FromBody] SupplierDto supplier)
         {
             if (!ModelState.IsValid)

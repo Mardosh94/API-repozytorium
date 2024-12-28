@@ -5,6 +5,7 @@ using API_Auth.Modules.Customers.Responses;
 using API_Auth.Modules.Customers.Services.CustomerServices;
 using API_Auth.Modules.Shared;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Auth.Modules.Customers.Controllers
@@ -19,11 +20,10 @@ namespace API_Auth.Modules.Customers.Controllers
             {
                 _customerService = customerService;
             }
-
-            // CREATE: POST /Employees
+             
             [HttpPost("add")]
-            //[Authorize]
-            public async Task<IActionResult> AddCustomer([FromBody] CustomerDto customer)
+            [Authorize]
+        public async Task<IActionResult> AddCustomer([FromBody] CustomerDto customer)
             {
                 if (!ModelState.IsValid)
                 {
@@ -40,8 +40,8 @@ namespace API_Auth.Modules.Customers.Controllers
 
             //DELETE: DELETE /Customer/{id}
             [HttpDelete("delete/{id}")]
-            //[Authorize]
-            public async Task<IActionResult> DeleteCustomer(int id)
+            [Authorize]
+        public async Task<IActionResult> DeleteCustomer(int id)
             {
                 var deleteResult = await _customerService.DeleteCustomer(id);
                 if (!deleteResult.IsSuccess)
@@ -56,8 +56,8 @@ namespace API_Auth.Modules.Customers.Controllers
             }
 
             [HttpPut("update")]
-            //[Authorize]
-            public async Task<IActionResult> UpdateCustomer([FromBody] CustomerDto customer, [FromQuery] int id)    ///Do posprzątania
+            [Authorize]
+        public async Task<IActionResult> UpdateCustomer([FromBody] CustomerDto customer, [FromQuery] int id)    ///Do posprzątania
             {
                 var updateResult = await _customerService.UpdateCustomer(id, customer);
 
@@ -70,8 +70,8 @@ namespace API_Auth.Modules.Customers.Controllers
             }
             // GET: GET /Customer/{id}
             [HttpGet("getBy/{id}")]
-            //[Authorize]
-            public async Task<ActionResult<Customer>> GetCustomerById(int id)
+            [Authorize]
+        public async Task<ActionResult<Customer>> GetCustomerById(int id)
             {
                 var customer = await _customerService.GetCustomerById(id);
 
@@ -83,8 +83,8 @@ namespace API_Auth.Modules.Customers.Controllers
 
             // GET: GET /Customer
             [HttpGet("getAll")]
-            //[Authorize]
-            public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomer()
+            [Authorize]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomer()
             {
                 var customer = await _customerService.GetAllCustomers();
                 return Ok(customer); // Zwrócenie 200 OK i listy pracowników

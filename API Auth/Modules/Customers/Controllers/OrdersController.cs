@@ -1,6 +1,7 @@
 ﻿using API_Auth.Modules.Customers.Dtos;
 using API_Auth.Modules.Customers.Services.OrderServices;
 using API_Auth.Modules.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Auth.Modules.Customers.Controllers
@@ -16,6 +17,7 @@ namespace API_Auth.Modules.Customers.Controllers
         }
 
         [HttpPost("/Customers/{customerId}/Orders")]
+        [Authorize]
         public async Task<IActionResult> AddOrder(int customerId, [FromBody] OrderDto orderDto)
         {
             if (!ModelState.IsValid)
@@ -32,6 +34,7 @@ namespace API_Auth.Modules.Customers.Controllers
         }
 
         [HttpDelete("/Customers/{customerId}/Orders/{orderId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteOrder(int customerId, int orderId)
         {
             var deleteResult = await _orderService.DeleteOrder(customerId, orderId);
@@ -45,6 +48,7 @@ namespace API_Auth.Modules.Customers.Controllers
             return NoContent(); // 204 - No Content, ponieważ obiekt został usunięty
         }
         [HttpGet("/Customers/{customerId}/Orders")]
+        [Authorize]
         public async Task<IActionResult> GetAllOrdersByCustomerId(int customerId)
         {
             var result = await _orderService.GetAllOrdersByCustomerId(customerId);
