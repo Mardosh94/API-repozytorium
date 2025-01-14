@@ -10,10 +10,12 @@ namespace API_Auth.Modules.Suppliers.Services.InvoiceServices
     public class InvoiceService : IInvoiceService
     {
         private readonly AppDbContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public InvoiceService(AppDbContext context)
+        public InvoiceService(AppDbContext context, IUserHelper userHelper)
         {
             _context = context;
+            _userHelper=userHelper;
         }
 
         public async Task<ServiceResult<Invoice>> AddInvoice(InvoiceDto invoiceDto)
@@ -21,6 +23,7 @@ namespace API_Auth.Modules.Suppliers.Services.InvoiceServices
             try
             {
                 var invoiceDb = invoiceDto.Adapt<Invoice>();
+                invoiceDb.UserId = (await _userHelper.GetMyUser()).Id;
                 _context.Invoices.Add(invoiceDb);
                  await _context.SaveChangesAsync();
                 return ServiceResult<Invoice>.Success(invoiceDb);
@@ -52,8 +55,10 @@ namespace API_Auth.Modules.Suppliers.Services.InvoiceServices
 
         public async Task<List<Invoice>> GetInvoicesByType(int type)
         {
+            var userId = (await _userHelper.GetMyUser()).Id;
             var invoices = await _context.Invoices
-                .Where(e => (int)e.InvoiceType == type) // Filtrowanie faktur po typie
+                .Where(e => (int)e.InvoiceType == type)
+                .Where(x => x.UserId == userId)
                 .ToListAsync();
             return invoices;
         }

@@ -10,6 +10,7 @@ namespace API_Auth.Modules.Invoices.Entities
         public DateTime DueDate { get; set; }
         public decimal Amount { get; set; }
         public bool IsPayed { get; set; }
+        public string UserId { get; set; }
         public TypeOfInvoice InvoiceType { get; set; }
         public DateTime? PaymentDate { get; set; }
     }

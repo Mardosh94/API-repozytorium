@@ -20,6 +20,7 @@ namespace API_Auth.Modules.Employees.Entities
 
         public int AddressId { get; set; }
 
+        public string UserId { get; set; }
 
         public Address Address { get; set; }
 

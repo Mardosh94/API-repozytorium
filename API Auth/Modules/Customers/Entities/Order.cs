@@ -10,7 +10,5 @@ namespace API_Auth.Modules.Customers.Entities
         [Required]
         public DateTime OrderDate { get; set; }
         public string? Description { get; set; }
-        [Required]
-        public bool Status { get; set; }
     }
 }

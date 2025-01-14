@@ -3,8 +3,8 @@ using API_Auth.Modules.Customers.Services.CustomerServices;
 using API_Auth.Modules.Customers.Services.OrderServices;
 using API_Auth.Modules.Employees.Services.EmployeeServices;
 using API_Auth.Modules.Employees.Services.TimesheetServices;
+using API_Auth.Modules.Shared;
 using API_Auth.Modules.Suppliers.Services.InvoiceServices;
-using API_Auth.Modules.Suppliers.Services.SupplierServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args); // Inicjalizacja aplikacji ASP
 
 // Dodaje wsparcie dla kontrolerów API
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 // Konfiguracja Swaggera/OpenAPI, umo¿liwia generowanie dokumentacji API
 builder.Services.AddEndpointsApiExplorer();
@@ -90,8 +91,8 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();////////////////
 builder.Services.AddScoped<ITimesheetService, TimesheetService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
 builder.Services.AddScoped<ICustomerService, CustomerService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
 builder.Services.AddScoped<IOrderService, OrderService>();//////////////////////////////////Wa¿ne zapamiêtaj!!!!!!!!!!!!
-builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IUserHelper, UserHelper>();
 var app = builder.Build(); // Tworzy aplikacjê na podstawie skonfigurowanego buildera
 
 // Konfiguracja potoku HTTP (Middleware)

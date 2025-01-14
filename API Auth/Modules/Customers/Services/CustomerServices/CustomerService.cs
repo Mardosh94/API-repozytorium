@@ -10,10 +10,12 @@ namespace API_Auth.Modules.Customers.Services.CustomerServices
     public class CustomerService : ICustomerService
     {
         private readonly AppDbContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public CustomerService(AppDbContext context)
+        public CustomerService(AppDbContext context, IUserHelper userHelper)
         {
             _context = context;
+            _userHelper = userHelper;
         }
 
         public async Task<ServiceResult<Customer>> AddCustomer(CustomerDto customerDto)
@@ -21,6 +23,8 @@ namespace API_Auth.Modules.Customers.Services.CustomerServices
             try
             {
                 var customerDb = customerDto.Adapt<Customer>(); // Mapowanie z Dto na db model
+
+                customerDb.UserId =(await _userHelper.GetMyUser()).Id;
 
                 _context.Customers.Add(customerDb);
 
@@ -79,7 +83,9 @@ namespace API_Auth.Modules.Customers.Services.CustomerServices
 
         public async Task<List<Customer>> GetAllCustomers()
         {
+            var userId = (await _userHelper.GetMyUser()).Id;
             var customers = await _context.Customers
+            .Where(x => x.UserId == userId)
             .Include(e => e.Address)
             .ToListAsync();
             return customers;
