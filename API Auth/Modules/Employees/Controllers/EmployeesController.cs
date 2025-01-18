@@ -5,6 +5,7 @@ using API_Auth.Modules.Employees.Responses;
 using API_Auth.Modules.Employees.Services.EmployeeServices;
 using API_Auth.Modules.Shared;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Auth.Modules.Employees.Controllers
@@ -22,7 +23,7 @@ namespace API_Auth.Modules.Employees.Controllers
 
         // CREATE: POST /Employees
         [HttpPost("add")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> AddEmployee([FromBody] EmployeeDto employee)
         {
             if (!ModelState.IsValid)
@@ -40,7 +41,7 @@ namespace API_Auth.Modules.Employees.Controllers
 
         //DELETE: DELETE /Employees/{id}
         [HttpDelete("delete/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             var deleteResult = await _employeeService.DeleteEmployee(id);
@@ -52,11 +53,11 @@ namespace API_Auth.Modules.Employees.Controllers
                 if (deleteResult.ErrorMessege.Equals(ErrorMessages.InternalServerError))
                     return StatusCode(500);
             }
-            return NoContent(); // 204 - No Content, ponieważ obiekt został usunięty
+            return NoContent();
         }
 
         [HttpPut("update")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeDto employee, [FromQuery] int id)    ///Do posprzątania
         {
            var updateResult =await _employeeService.UpdateEmployee(id, employee);
@@ -70,7 +71,7 @@ namespace API_Auth.Modules.Employees.Controllers
         }
         // GET: GET /Employees/{id}
         [HttpGet("getBy/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<Employee>> GetEmployeeById(int id)
         {
             var employee = await _employeeService.GetEmployeeById(id);
@@ -83,7 +84,7 @@ namespace API_Auth.Modules.Employees.Controllers
 
         // GET: GET /Employees
         [HttpGet("getAll")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployees()
         {
             var employees = await _employeeService.GetAllEmployees();

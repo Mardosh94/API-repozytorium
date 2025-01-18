@@ -1,27 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace API_Auth.Modules.Invoices
+namespace API_Auth.Modules.Invoices.Entities
 {
     public class Invoice
     {
-        [Key]
         public int Id { get; set; }
-        [Required, MaxLength(25)]
         public string InvoiceNumber { get; set; }
-        [Required]
         public DateTime InvoiceDate { get; set; }
-        [Required]
         public DateTime DueDate { get; set; }
-        [Required]
         public decimal Amount { get; set; }
-        [Required]
         public bool IsPayed { get; set; }
-        [Required]
+        public string UserId { get; set; }
         public TypeOfInvoice InvoiceType { get; set; }
         public DateTime? PaymentDate { get; set; }
-
-
     }
 
     public enum TypeOfInvoice

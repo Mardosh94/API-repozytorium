@@ -7,17 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_Auth.Modules.Employees.Services.EmployeeServices
 {
-
-
-    //public class
-
     public class EmployeeService : IEmployeeService
     {
         private readonly AppDbContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public EmployeeService(AppDbContext context)
+        public EmployeeService(AppDbContext context, IUserHelper userHelper)
         {
             _context = context;
+            _userHelper=userHelper;
         }
 
         public async Task<ServiceResult<Employee>> AddEmployee(EmployeeDto employeeDto)
@@ -25,6 +23,8 @@ namespace API_Auth.Modules.Employees.Services.EmployeeServices
             try
             {
                var employeeDb = employeeDto.Adapt<Employee>(); // Mapowanie z Dto na db model
+               
+                employeeDb.UserId =(await _userHelper.GetMyUser()).Id;
 
                 _context.Employees.Add(employeeDb);
 
@@ -89,7 +89,9 @@ namespace API_Auth.Modules.Employees.Services.EmployeeServices
         
         public async Task<List<Employee>> GetAllEmployees()//czy to może iść do shared?
         {
+            var userId = (await _userHelper.GetMyUser()).Id;
             var employees = await _context.Employees
+            .Where(x => x.UserId == userId)
             .Include(e => e.Address)
             .Include(e => e.Timesheets)
             .ToListAsync();

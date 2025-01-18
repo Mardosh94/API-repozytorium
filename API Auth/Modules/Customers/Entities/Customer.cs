@@ -1,13 +1,17 @@
 ﻿using API_Auth.Modules.Employees.Entities;
+using API_Auth.Modules.Invoices.Entities;
+using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace API_Auth.Modules.Customers
+namespace API_Auth.Modules.Customers.Entities
 {
     public class Customer
     {
         [Key]
         public int Id { get; set; }
+        [Required, MaxLength(50)]
+        public string CompanyName { get; set; }
         [Required, MaxLength(50)]
         public string FirstName { get; set; }
         [Required, MaxLength(50)]
@@ -19,6 +23,8 @@ namespace API_Auth.Modules.Customers
         [ForeignKey("Address")]
         public int AddressId { get; set; }
         public Address Address { get; set; }
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
         public List<Order>? Orders { get; set; }
     }
 }

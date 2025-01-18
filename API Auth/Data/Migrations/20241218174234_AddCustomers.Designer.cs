@@ -3,6 +3,7 @@ using System;
 using API_Auth.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Auth.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241218174234_AddCustomers")]
+    partial class AddCustomers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -51,10 +54,6 @@ namespace API_Auth.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -76,6 +75,9 @@ namespace API_Auth.Migrations
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -160,10 +162,6 @@ namespace API_Auth.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -193,7 +191,7 @@ namespace API_Auth.Migrations
                     b.ToTable("Timesheets");
                 });
 
-            modelBuilder.Entity("API_Auth.Modules.Invoices.Entities.Invoice", b =>
+            modelBuilder.Entity("API_Auth.Modules.Invoices.Invoice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -210,6 +208,7 @@ namespace API_Auth.Migrations
 
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
+                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("InvoiceType")
@@ -221,13 +220,63 @@ namespace API_Auth.Migrations
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.ToTable("Invoices");
+                });
+
+            modelBuilder.Entity("API_Auth.Modules.Invoices.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("invoiceId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("invoiceId");
+
+                    b.ToTable("Suppliers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AddressId = 1,
+                            Email = "supplierA@example.com",
+                            Name = "Supplier A",
+                            PhoneNumber = "123456789"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AddressId = 2,
+                            Email = "supplierB@example.com",
+                            Name = "Supplier B",
+                            PhoneNumber = "987654321"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -456,6 +505,23 @@ namespace API_Auth.Migrations
                     b.HasOne("API_Auth.Modules.Employees.Entities.Employee", null)
                         .WithMany("Timesheets")
                         .HasForeignKey("EmployeeId");
+                });
+
+            modelBuilder.Entity("API_Auth.Modules.Invoices.Supplier", b =>
+                {
+                    b.HasOne("API_Auth.Modules.Employees.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API_Auth.Modules.Invoices.Invoice", "Invoices")
+                        .WithMany()
+                        .HasForeignKey("invoiceId");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Invoices");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
